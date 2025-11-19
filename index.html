@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Doğum Günü Link Üretici</title>
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; display:flex; align-items:center; justify-content:center; min-height:100vh; background:linear-gradient(135deg,#ffecd2,#fcb69f); margin:0; }
+    .card { background: #fff; padding:24px; border-radius:12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); width:320px; }
+    h1 { margin:0 0 12px 0; font-size:20px; }
+    label{font-size:13px;color:#444}
+    input { width:100%; padding:10px; margin:8px 0 14px 0; border-radius:8px; border:1px solid #e0e0e0; font-size:15px; }
+    button { width:100%; padding:10px; border-radius:8px; border:0; background:#ff6b6b; color:#fff; font-weight:600; cursor:pointer; }
+    .small { font-size:12px; margin-top:10px; color:#444; text-align:center; }
+    .result { margin-top:12px; display:flex; gap:8px; }
+    .linkbox { flex:1; padding:8px; background:#f6f6f6; border-radius:8px; overflow:auto; font-size:13px; }
+    .mini { padding:8px; border-radius:8px; border:0; background:#556cd6; color:#fff; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Doğum Günü Linki Oluştur</h1>
+
+    <label>Ad</label>
+    <input id="first" placeholder="Örn: Ahmet" />
+
+    <label>Soyad</label>
+    <input id="last" placeholder="Örn: Yılmaz" />
+
+    <label>İstersen kısa not</label>
+    <input id="note" placeholder="Mutlu yıllar! 🎉 (opsiyonel)" />
+
+    <button id="make">Link Oluştur</button>
+
+    <div class="result" style="display:none" id="resWrap">
+      <div class="linkbox" id="linkBox"></div>
+      <button class="mini" id="copyBtn">Kopyala</button>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button id="whatsapp" style="flex:1;background:#25D366;">WhatsApp'la Gönder</button>
+      <button id="download" style="flex:1;background:#4CAF50;">Kişisel HTML İndir</button>
+    </div>
+
+    <div class="small">Not: Oluşan link `greet.html`'e yönlendirir. Her iki dosyayı da aynı klasöre koy.</div>
+  </div>
+
+<script>
+const first = document.getElementById('first');
+const last = document.getElementById('last');
+const note = document.getElementById('note');
+const make = document.getElementById('make');
+const resWrap = document.getElementById('resWrap');
+const linkBox = document.getElementById('linkBox');
+const copyBtn = document.getElementById('copyBtn');
+const whatsapp = document.getElementById('whatsapp');
+const download = document.getElementById('download');
+
+function buildBaseGreetURL() {
+  // Eğer index.html farklı isimle (ör. root) çalışıyorsa greet.html'e göre göreli link kurar.
+  const href = location.href;
+  // Eğer URL index.html ile bitiyorsa değiştir, değilse son /'dan sonra ekle
+  if (href.endsWith('index.html')) {
+    return href.replace(/index\.html$/, 'greet.html');
+  }
+  if (href.endsWith('/')) {
+    return href + 'greet.html';
+  }
+  // genel: aynı dizinde greet.html
+  return href + (href.includes('?') ? '&' : '?') && href.split('/').slice(0,-1).join('/') + '/greet.html';
+}
+
+function makeLink() {
+  const f = first.value.trim();
+  const l = last.value.trim();
+  const n = note.value.trim();
+  if (!f && !l) {
+    alert('Lütfen ad veya soyad gir.');
+    return;
+  }
+  const fullname = `${f} ${l}`.trim();
+  const params = new URLSearchParams();
+  params.set('name', fullname);
+  if (n) params.set('note', n);
+  // Kısa: greet.html?name=...&note=...
+  // base olarak göreli greet.html kullan:
+  const base = (function(){
+    // kolaylaştırma: assume greet.html same dir
+    const path = location.pathname;
+    const baseDir = path.substring(0, path.lastIndexOf('/')+1);
+    return location.origin === "null" ? (baseDir + 'greet.html') : location.origin + baseDir + 'greet.html';
+  })();
+  const url = base + '?' + params.toString();
+  return url;
+}
+
+make.addEventListener('click', () => {
+  const url = makeLink();
+  linkBox.textContent = url;
+  resWrap.style.display = 'flex';
+});
+
+copyBtn.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(linkBox.textContent);
+    copyBtn.textContent = 'Kopyalandı ✓';
+    setTimeout(()=> copyBtn.textContent = 'Kopyala', 1500);
+  } catch(e) {
+    alert('Kopyalama başarısız. Manuel kopyalayın: ' + linkBox.textContent);
+  }
+});
+
+whatsapp.addEventListener('click', () => {
+  const url = makeLink();
+  const text = encodeURIComponent(`Doğum günün kutlu olsun! 🎉 Açmak için tıkla: ${url}`);
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+});
+
+// "Kişisel HTML indir" — alıcıya direk göndermek için tek dosya oluşturur
+download.addEventListener('click', () => {
+  const fullname = `${first.value.trim()} ${last.value.trim()}`.trim();
+  if (!fullname) { alert('Önce ad veya soyad gir.'); return; }
+  const noteText = note.value.trim();
+  // Basit kişisel greet HTML
+  const html = `
+  <!doctype html>
+  <html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>${fullname} için Doğum Günü</title>
+    <style>
+      body{font-family:Inter,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(90deg,#fddb92,#d1fdff);margin:0}
+      .wrap{background:white;padding:32px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.12);text-align:center}
+      h1{margin:0 0 8px 0}
+      p{margin:8px 0}
+      .btn{display:inline-block;margin-top:12px;padding:10px 18px;background:#ff6b6b;color:white;border-radius:10px;text-decoration:none}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Mutlu Yıllar, ${escapeHtml(fullname)}! 🎉</h1>
+      <p>${escapeHtml(noteText || 'Nice mutlu yıllara!')}</p>
+      <a class="btn" href="#" onclick="confetti();return false">Kutla 🎈</a>
+    </div>
+    <script>
+      function confetti(){
+        alert('🎉 ' + ${JSON.stringify(fullname)} + ' için kutlama!');
+      }
+    </script>
+  </body>
+  </html>
+  `;
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `mutlu_yillar_${fullname.replace(/\s+/g,'_') || 'kisi'}.html`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+function escapeHtml(s){ return (s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+</script>
+</body>
+</html>
