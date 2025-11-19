@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mutlu Yıllar!</title>
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; min-height:100vh; margin:0; display:flex; align-items:center; justify-content:center;
+           background: radial-gradient(circle at 20% 20%, #fff7c2, transparent 20%), linear-gradient(135deg,#ffd1dc,#f5f7ff); }
+    .card { background: rgba(255,255,255,0.9); padding:28px; border-radius:16px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); text-align:center; width:90%; max-width:520px; }
+    h1 { margin:0 0 8px 0; font-size:28px; }
+    p { margin:0 0 12px 0; color:#333; font-size:16px; }
+    .big { font-size:46px; margin-top:8px; }
+    button { padding:10px 16px; border-radius:10px; border:0; background:#ff6b6b; color:white; cursor:pointer; font-weight:600; }
+    .share { margin-top:12px; display:flex; gap:8px; justify-content:center; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div id="emoji" class="big">🎉</div>
+    <h1 id="title">Mutlu Yıllar!</h1>
+    <p id="note">Harika bir gün geçirmeni dilerim.</p>
+
+    <div class="share">
+      <button id="copy">Linki Kopyala</button>
+      <button id="share">Paylaş</button>
+    </div>
+  </div>
+
+<script>
+function getParams() {
+  const params = new URLSearchParams(location.search);
+  return {
+    name: params.get('name') || '',
+    note: params.get('note') || ''
+  };
+}
+
+function safeText(s){ return (s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+const p = getParams();
+const title = document.getElementById('title');
+const noteEl = document.getElementById('note');
+if (p.name) {
+  title.innerHTML = `Mutlu Yıllar, <strong>${safeText(p.name)}</strong>!`;
+}
+if (p.note) {
+  noteEl.textContent = decodeURIComponent(p.note) || p.note;
+}
+
+// copy link
+document.getElementById('copy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+    document.getElementById('copy').textContent = 'Kopyalandı ✓';
+    setTimeout(()=> document.getElementById('copy').textContent = 'Linki Kopyala', 1500);
+  } catch(e) {
+    alert('Kopyalama başarısız: ' + location.href);
+  }
+});
+
+// share (Web Share API destekliyorsa)
+document.getElementById('share').addEventListener('click', async () => {
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Mutlu Yıllar!', text: `Sana özel: ${p.name || ''}`, url: location.href });
+    } catch (err) { /* kullanıcı iptal etti */ }
+  } else {
+    alert('Paylaşma desteklenmiyor. Linki kopyalayabilirsiniz.');
+  }
+});
+</script>
+</body>
+</html>
