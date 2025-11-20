@@ -149,9 +149,10 @@ button:hover { transform:scale(1.03); }
 </div>
 
 <audio id="bgMusic" src="music.mp3" loop></audio>
-<button id="musicBtn" class="musicBtn"></button>
+<button id="musicBtn" class="musicBtn off"></button>
 
 <script>
+// URL parametreleri
 const url = new URLSearchParams(location.search);
 const name = url.get("name") || "Mutlu Yıllar!";
 const note = url.get("note") || "";
@@ -159,13 +160,15 @@ const msg = url.get("msg") || "Doğum günün kutlu olsun!";
 document.getElementById("person").textContent = name;
 document.getElementById("noteText").textContent = note;
 
+// Popup
 const pop = document.getElementById("popup");
 const overlay = document.getElementById("overlay");
 const popMsg = document.getElementById("popMsg");
 document.getElementById("btn").onclick = () => { popMsg.textContent = msg; pop.classList.add("show"); overlay.classList.add("show"); };
 function closePopup() { pop.classList.remove("show"); overlay.classList.remove("show"); }
 
-function createBalloon() { const b = document.createElement("div"); b.className="balloon"; b.style.left=Math.random()*100+"%"; b.style.animationDuration=(6+Math.random()*6)+"s"; const colors=["#ff6b6b","#ffd93d","#6bcfff","#a29bfe","#ff8ed4"]; b.style.background=colors[Math.floor(Math.random()*colors.length)]; document.body.appendChild(b); setTimeout(()=>b.remove(),12000); }
+// Balon ve konfeti
+function createBalloon() { const b=document.createElement("div"); b.className="balloon"; b.style.left=Math.random()*100+"%"; b.style.animationDuration=(6+Math.random()*6)+"s"; const colors=["#ff6b6b","#ffd93d","#6bcfff","#a29bfe","#ff8ed4"]; b.style.background=colors[Math.floor(Math.random()*colors.length)]; document.body.appendChild(b); setTimeout(()=>b.remove(),12000); }
 setInterval(createBalloon,900);
 function createConfetti() { const c=document.createElement("div"); c.className="confetti"; c.style.left=Math.random()*100+"%"; c.style.animationDuration=(3+Math.random()*3)+"s"; const colors=["#ff6b6b","#ffd93d","#6bcfff","#ffffff"]; c.style.background=colors[Math.floor(Math.random()*colors.length)]; document.body.appendChild(c); setTimeout(()=>c.remove(),6000); }
 setInterval(createConfetti,180);
@@ -173,8 +176,7 @@ setInterval(createConfetti,180);
 /* ---------------- MÜZİK BUTONU ---------------- */
 let audio = document.getElementById("bgMusic");
 let musicBtn = document.getElementById("musicBtn");
-let playing = !audio.paused; // audio gerçek durumu ile senkron
-if(playing){ musicBtn.classList.add("playing"); } else { musicBtn.classList.add("off"); }
+let playing = false; // başlangıçta kapalı
 
 function toggleMusic(){
   if(playing){
@@ -194,6 +196,7 @@ musicBtn.addEventListener('click', toggleMusic);
 
 </body>
 </html>
+
 
 
 
