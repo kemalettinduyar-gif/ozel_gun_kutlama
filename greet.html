@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mutlu Yıllar!</title>
+
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -15,71 +16,110 @@ body {
   background: linear-gradient(135deg,#fff7c2,#f5f7ff);
   overflow:hidden;
 }
+
+/* Kart */
 .card {
   background:rgba(255,255,255,0.95);
   padding:32px;
-  border-radius:16px;
+  border-radius:18px;
   box-shadow:0 12px 30px rgba(0,0,0,0.12);
   text-align:center;
   width:90%;
   max-width:520px;
   position:relative;
+  animation: pop 0.6s ease;
 }
-h1 { margin:0 0 12px 0; font-size:28px; color:#ff6b6b; }
-p { margin:0 0 16px 0; font-size:16px; color:#333; }
+
+/* Kart açılma animasyonu */
+@keyframes pop {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+h1 { margin:0 0 12px 0; font-size:30px; color:#ff6b6b; }
+p { margin:0 0 16px 0; font-size:17px; color:#444; }
+
+/* Buton */
 button {
-  padding:14px;
-  border-radius:10px;
+  padding:16px;
+  border-radius:14px;
   border:0;
   background:#ff6b6b;
   color:white;
   cursor:pointer;
   font-weight:600;
-  font-size:16px;
+  font-size:18px;
+  width:100%;
+  position:relative;
+  overflow:hidden;
 }
 
-/* Konfeti animasyonu */
+/* Ripple efekti */
+button:active::after {
+  content:"";
+  position:absolute;
+  left:50%; top:50%;
+  width:120px; height:120px;
+  background:rgba(255,255,255,0.4);
+  border-radius:50%;
+  transform:translate(-50%,-50%) scale(0);
+  animation:ripple 0.4s ease-out forwards;
+}
+
+@keyframes ripple {
+  to { transform:translate(-50%,-50%) scale(3); opacity:0; }
+}
+
+/* Konfeti */
 .confetti {
   position:absolute;
-  width:10px;
-  height:10px;
-  background: #ff6b6b;
-  top:0;
+  border-radius:3px;
+  top:-10px;
   animation: fall 3s linear infinite;
 }
+
 @keyframes fall {
-  0% { transform: translateY(0) rotate(0deg); }
-  100% { transform: translateY(100vh) rotate(360deg); }
+  0% { transform: translateY(0) translateX(0) rotate(0deg); }
+  100% { transform: translateY(100vh) translateX(40px) rotate(360deg); }
 }
 </style>
 </head>
+
 <body>
 <div class="card">
-<h1 id="title">Mutlu Yıllar!</h1>
-<p id="note">Harika bir gün geçirmeni dilerim.</p>
-<button onclick="alert('🎉 Bu Bir Doğum Günü Kutlama Mesajıdır!')">Kutla 🎈</button>
+  <h1 id="title">Mutlu Yıllar!</h1>
+  <p id="note">Harika bir gün geçirmeni dilerim.</p>
+  <button id="btnCelebrate">Kutla 🎈</button>
 </div>
 
 <script>
 const params = new URLSearchParams(location.search);
 const name = params.get('name');
 const noteText = params.get('note');
+const msg = params.get('msg') || "🎉 Mutlu Yıllar!";
 
+/* Başlık ve not güncelleme */
 if(name) document.getElementById('title').innerHTML = `Mutlu Yıllar, <strong>${name}</strong>!`;
 if(noteText) document.getElementById('note').textContent = noteText;
 
-// Basit konfeti animasyonu
-for(let i=0;i<50;i++){
-  const conf = document.createElement('div');
-  conf.className='confetti';
-  conf.style.left=Math.random()*100+'%';
-  conf.style.background=`hsl(${Math.random()*360},80%,60%)`;
-  conf.style.animationDuration=(2+Math.random()*2)+'s';
-  conf.style.width=(5+Math.random()*5)+'px';
-  conf.style.height=(5+Math.random()*5)+'px';
-  document.body.appendChild(conf);
+/* Buton mesajı */
+document.getElementById('btnCelebrate').addEventListener('click', ()=>{
+    alert(msg);
+});
+
+/* Konfeti oluştur */
+for(let i=0;i<60;i++){
+  const el = document.createElement('div');
+  el.className='confetti';
+  el.style.left=Math.random()*100+'%';
+  el.style.width=(6+Math.random()*6)+'px';
+  el.style.height=(6+Math.random()*6)+'px';
+  el.style.background=`hsl(${Math.random()*360},80%,60%)`;
+  el.style.animationDuration=(2+Math.random()*2)+'s';
+  document.body.appendChild(el);
 }
 </script>
 </body>
 </html>
+
 
