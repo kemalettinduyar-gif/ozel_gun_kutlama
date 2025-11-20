@@ -30,10 +30,7 @@ body {
     0 0 40px #ff4dd2;
   animation: neonGlow 2s infinite alternate;
 }
-@keyframes neonGlow {
-  from { opacity:0.6; }
-  to { opacity:1; }
-}
+@keyframes neonGlow { from { opacity:0.6; } to { opacity:1; } }
 .card {
   background:rgba(255,255,255,0.1);
   backdrop-filter: blur(14px);
@@ -47,10 +44,7 @@ body {
   animation: cardPop 0.8s ease;
   position:relative;
 }
-@keyframes cardPop {
-  0% { transform:scale(0.5); opacity:0; }
-  100% { transform:scale(1); opacity:1; }
-}
+@keyframes cardPop { 0% { transform:scale(0.5); opacity:0; } 100% { transform:scale(1); opacity:1; } }
 h2 { margin-bottom:10px; font-size:26px; }
 p { margin-bottom:16px; font-size:17px; }
 button {
@@ -76,10 +70,7 @@ button:hover { transform:scale(1.03); }
   animation: balloonUp linear infinite;
   opacity:0.9;
 }
-@keyframes balloonUp {
-  from { transform:translateY(0); }
-  to { transform:translateY(-120vh); }
-}
+@keyframes balloonUp { from { transform:translateY(0); } to { transform:translateY(-120vh); } }
 .confetti {
   position:absolute;
   width:8px;
@@ -89,10 +80,7 @@ button:hover { transform:scale(1.03); }
   top:-20px;
   animation: confettiFall linear infinite;
 }
-@keyframes confettiFall {
-  from { transform:translateY(0) rotate(0deg); }
-  to { transform:translateY(120vh) rotate(360deg); }
-}
+@keyframes confettiFall { from { transform:translateY(0) rotate(0deg); } to { transform:translateY(120vh) rotate(360deg); } }
 #popup {
   position:fixed;
   left:50%; top:50%;
@@ -107,21 +95,10 @@ button:hover { transform:scale(1.03); }
   z-index:9999;
   transition:0.4s;
 }
-#popup.show {
-  transform:translate(-50%,-50%) scale(1);
-  opacity:1;
-}
+#popup.show { transform:translate(-50%,-50%) scale(1); opacity:1; }
 #popup h3 { font-size:22px; margin-bottom:10px; }
 #popup p { font-size:17px; }
-#overlay {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.4);
-  backdrop-filter: blur(4px);
-  opacity:0;
-  pointer-events:none;
-  transition:0.4s;
-}
+#overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter: blur(4px); opacity:0; pointer-events:none; transition:0.4s; }
 #overlay.show { opacity:1; pointer-events:auto; }
 
 /* ---------------- YUVARLAK MÜZİK BUTONU ---------------- */
@@ -147,33 +124,11 @@ button:hover { transform:scale(1.03); }
   animation: glow 1.8s ease-in-out infinite alternate;
 }
 .musicBtn:active { transform:scale(0.88); }
-.musicBtn.off {
-  background:#999;
-  box-shadow:0 4px 12px rgba(0,0,0,0.25), 0 0 8px #99940;
-  animation:none;
-}
-.musicBtn.playing::after {
-  content: "🔊";
-  position:absolute;
-  font-size:18px;
-  animation: pulse 1s infinite alternate;
-}
-.musicBtn.off::after {
-  content: "🔇";
-  position:absolute;
-  font-size:18px;
-  animation:none;
-}
-@keyframes glow {
-  0% { box-shadow:0 4px 12px rgba(0,0,0,0.25), 0 0 8px #ff6b6b40; }
-  50% { box-shadow:0 4px 16px rgba(0,0,0,0.3), 0 0 18px #ff6b6b80; }
-  100% { box-shadow:0 4px 12px rgba(0,0,0,0.25), 0 0 8px #ff6b6b40; }
-}
-@keyframes pulse {
-  0% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.2) rotate(-10deg); }
-  100% { transform: scale(1) rotate(10deg); }
-}
+.musicBtn.off { background:#999; box-shadow:0 4px 12px rgba(0,0,0,0.25), 0 0 8px #99940; animation:none; }
+.musicBtn.playing::after { content:"🔊"; position:absolute; font-size:18px; animation: pulse 1s infinite alternate; }
+.musicBtn.off::after { content:"🔇"; position:absolute; font-size:18px; animation:none; }
+@keyframes glow { 0% { box-shadow:0 4px 12px rgba(0,0,0,0.25),0 0 8px #ff6b6b40; } 50% { box-shadow:0 4px 16px rgba(0,0,0,0.3),0 0 18px #ff6b6b80; } 100% { box-shadow:0 4px 12px rgba(0,0,0,0.25),0 0 8px #ff6b6b40; } }
+@keyframes pulse { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.2) rotate(-10deg); } 100% { transform: scale(1) rotate(10deg); } }
 </style>
 </head>
 <body>
@@ -193,7 +148,7 @@ button:hover { transform:scale(1.03); }
   <button id="btn">Kutlama Mesajı</button>
 </div>
 
-<audio id="bgMusic" src="music.mp3" loop autoplay></audio>
+<audio id="bgMusic" src="music.mp3" loop></audio>
 <button id="musicBtn" class="musicBtn"></button>
 
 <script>
@@ -207,49 +162,19 @@ document.getElementById("noteText").textContent = note;
 const pop = document.getElementById("popup");
 const overlay = document.getElementById("overlay");
 const popMsg = document.getElementById("popMsg");
+document.getElementById("btn").onclick = () => { popMsg.textContent = msg; pop.classList.add("show"); overlay.classList.add("show"); };
+function closePopup() { pop.classList.remove("show"); overlay.classList.remove("show"); }
 
-document.getElementById("btn").onclick = () => {
-  popMsg.textContent = msg;
-  pop.classList.add("show");
-  overlay.classList.add("show");
-};
-
-function closePopup() {
-  pop.classList.remove("show");
-  overlay.classList.remove("show");
-}
-
-function createBalloon() {
-  const b = document.createElement("div");
-  b.className = "balloon";
-  b.style.left = Math.random()*100+"%";
-  b.style.animationDuration = (6 + Math.random()*6) + "s";
-  const colors = ["#ff6b6b","#ffd93d","#6bcfff","#a29bfe","#ff8ed4"];
-  b.style.background = colors[Math.floor(Math.random()*colors.length)];
-  document.body.appendChild(b);
-  setTimeout(()=>b.remove(), 12000);
-}
-setInterval(createBalloon, 900);
-
-function createConfetti() {
-  const c = document.createElement("div");
-  c.className = "confetti";
-  c.style.left = Math.random()*100+"%";
-  c.style.animationDuration = (3 + Math.random()*3)+"s";
-  const colors = ["#ff6b6b","#ffd93d","#6bcfff","#ffffff"];
-  c.style.background = colors[Math.floor(Math.random()*colors.length)];
-  document.body.appendChild(c);
-  setTimeout(()=>c.remove(), 6000);
-}
-setInterval(createConfetti, 180);
+function createBalloon() { const b = document.createElement("div"); b.className="balloon"; b.style.left=Math.random()*100+"%"; b.style.animationDuration=(6+Math.random()*6)+"s"; const colors=["#ff6b6b","#ffd93d","#6bcfff","#a29bfe","#ff8ed4"]; b.style.background=colors[Math.floor(Math.random()*colors.length)]; document.body.appendChild(b); setTimeout(()=>b.remove(),12000); }
+setInterval(createBalloon,900);
+function createConfetti() { const c=document.createElement("div"); c.className="confetti"; c.style.left=Math.random()*100+"%"; c.style.animationDuration=(3+Math.random()*3)+"s"; const colors=["#ff6b6b","#ffd93d","#6bcfff","#ffffff"]; c.style.background=colors[Math.floor(Math.random()*colors.length)]; document.body.appendChild(c); setTimeout(()=>c.remove(),6000); }
+setInterval(createConfetti,180);
 
 /* ---------------- MÜZİK BUTONU ---------------- */
-let playing = true;
-const audio = document.getElementById("bgMusic");
-const musicBtn = document.getElementById("musicBtn");
-
-// Başlangıçta açık simge
-musicBtn.classList.add("playing");
+let audio = document.getElementById("bgMusic");
+let musicBtn = document.getElementById("musicBtn");
+let playing = !audio.paused; // audio gerçek durumu ile senkron
+if(playing){ musicBtn.classList.add("playing"); } else { musicBtn.classList.add("off"); }
 
 function toggleMusic(){
   if(playing){
@@ -258,7 +183,7 @@ function toggleMusic(){
     musicBtn.classList.add("off");
     musicBtn.classList.remove("playing");
   } else {
-    audio.play();
+    audio.play().catch(()=>{}); // autoplay engellenirse hata yeme
     playing=true;
     musicBtn.classList.remove("off");
     musicBtn.classList.add("playing");
@@ -269,5 +194,6 @@ musicBtn.addEventListener('click', toggleMusic);
 
 </body>
 </html>
+
 
 
