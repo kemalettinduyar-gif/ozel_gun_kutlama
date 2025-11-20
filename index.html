@@ -1,1 +1,164 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doğum Günü Linki Oluştur</title>
 
+<style>
+body {
+  font-family: Arial,sans-serif;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  background: linear-gradient(135deg,#ffecd2,#fcb69f);
+  margin:0;
+  padding:16px;
+}
+
+.card {
+  background:#fff;
+  padding:28px;
+  border-radius:18px;
+  box-shadow:0 10px 35px rgba(0,0,0,0.12);
+  width:100%;
+  max-width:380px;
+  text-align:center;
+  animation: pop 0.6s ease;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+input {
+  width:100%;
+  padding:15px;
+  margin:8px 0;
+  border-radius:12px;
+  border:1px solid #ccc;
+  font-size:16px;
+  box-sizing:border-box;
+}
+
+button {
+  width:100%;
+  padding:15px;
+  margin-top:10px;
+  border-radius:12px;
+  border:0;
+  background:#ff6b6b;
+  color:#fff;
+  cursor:pointer;
+  font-weight:600;
+  font-size:17px;
+  position:relative;
+  overflow:hidden;
+}
+
+button:active::after {
+  content:"";
+  position:absolute;
+  left:50%; top:50%;
+  width:120px; height:120px;
+  background:rgba(255,255,255,0.4);
+  transform:translate(-50%,-50%) scale(0);
+  border-radius:50%;
+  animation:ripple 0.4s ease-out forwards;
+}
+
+@keyframes ripple {
+  to { transform:translate(-50%,-50%) scale(3); opacity:0; }
+}
+
+.result {
+  margin-top:12px;
+  display:none;
+  flex-direction:column;
+  gap:8px;
+}
+
+.linkbox {
+  padding:10px;
+  background:#f0f0f0;
+  border-radius:10px;
+  word-break:break-all;
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+  <h2>Doğum Günü Linki Oluştur</h2>
+
+  <input id="first" placeholder="Ad">
+  <input id="last" placeholder="Soyad">
+  <input id="note" placeholder="Kısa not (opsiyonel)">
+  <input id="btnmsg" placeholder="Buton mesajı (opsiyonel)">
+  
+  <button id="make">Link Oluştur</button>
+
+  <div class="result" id="resWrap">
+    <div class="linkbox" id="linkBox"></div>
+    <button id="copyBtn">Kopyala</button>
+  </div>
+
+  <button id="whatsapp">WhatsApp ile Gönder</button>
+</div>
+
+<script>
+const first = document.getElementById('first');
+const last = document.getElementById('last');
+const note = document.getElementById('note');
+const btnmsg = document.getElementById('btnmsg');
+const make = document.getElementById('make');
+const resWrap = document.getElementById('resWrap');
+const linkBox = document.getElementById('linkBox');
+const copyBtn = document.getElementById('copyBtn');
+const whatsapp = document.getElementById('whatsapp');
+
+function makeLink() {
+  const f = first.value.trim();
+  const l = last.value.trim();
+  const n = note.value.trim();
+  const m = btnmsg.value.trim();
+
+  if(!f && !l){ alert('Lütfen ad veya soyad girin'); return ''; }
+
+  const params = new URLSearchParams();
+  params.set('name', `${f} ${l}`.trim());
+  if(n) params.set('note', n);
+  if(m) params.set('msg', m);
+
+  const base = location.origin + location.pathname.replace(/index\.html$/,'') + 'greet.html';
+  return base + '?' + params.toString();
+}
+
+make.addEventListener('click', ()=>{
+  const url = makeLink();
+  if(!url) return;
+  linkBox.textContent = url;
+  resWrap.style.display = 'flex';
+});
+
+copyBtn.addEventListener('click', async()=>{
+  try{
+    await navigator.clipboard.writeText(linkBox.textContent);
+    copyBtn.textContent='Kopyalandı ✓';
+    setTimeout(()=>copyBtn.textContent='Kopyala',1500);
+  } catch(e){
+    alert('Kopyalama başarısız');
+  }
+});
+
+whatsapp.addEventListener('click', ()=>{
+  const url = makeLink();
+  if(!url) return;
+  const text = encodeURIComponent(`🎉 Doğum günün kutlu olsun! Açmak için tıkla:\n${url}`);
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+});
+</script>
+</body>
+</html>
