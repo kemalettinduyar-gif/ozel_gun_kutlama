@@ -128,7 +128,7 @@ button:hover { transform:scale(1.03); }
 .musicBtn {
   position:fixed;
   top:16px;
-  right:16px;
+  right:60px;
   width:56px;
   height:56px;
   border-radius:50%;
@@ -143,20 +143,36 @@ button:hover { transform:scale(1.03); }
   transition:0.2s all ease;
   z-index:10000;
   overflow:hidden;
-  /* Glow animasyonu */
   box-shadow:0 4px 12px rgba(0,0,0,0.25), 0 0 12px #ff6b6b60;
   animation: glow 1.8s ease-in-out infinite alternate;
-}
-@keyframes glow {
-  0% { box-shadow:0 4px 12px rgba(0,0,0,0.25), 0 0 8px #ff6b6b40; }
-  50% { box-shadow:0 4px 16px rgba(0,0,0,0.3), 0 0 18px #ff6b6b80; }
-  100% { box-shadow:0 4px 12px rgba(0,0,0,0.25), 0 0 8px #ff6b6b40; }
 }
 .musicBtn:active { transform:scale(0.88); }
 .musicBtn.off {
   background:#999;
   box-shadow:0 4px 12px rgba(0,0,0,0.25), 0 0 8px #99940;
   animation:none;
+}
+.musicBtn.playing::after {
+  content: "🔊";
+  position:absolute;
+  font-size:18px;
+  animation: pulse 1s infinite alternate;
+}
+.musicBtn.off::after {
+  content: "🔇";
+  position:absolute;
+  font-size:18px;
+  animation:none;
+}
+@keyframes glow {
+  0% { box-shadow:0 4px 12px rgba(0,0,0,0.25), 0 0 8px #ff6b6b40; }
+  50% { box-shadow:0 4px 16px rgba(0,0,0,0.3), 0 0 18px #ff6b6b80; }
+  100% { box-shadow:0 4px 12px rgba(0,0,0,0.25), 0 0 8px #ff6b6b40; }
+}
+@keyframes pulse {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.2) rotate(-10deg); }
+  100% { transform: scale(1) rotate(10deg); }
 }
 </style>
 </head>
@@ -178,7 +194,7 @@ button:hover { transform:scale(1.03); }
 </div>
 
 <audio id="bgMusic" src="music.mp3" loop autoplay></audio>
-<button id="musicBtn" class="musicBtn">🔊</button>
+<button id="musicBtn" class="musicBtn"></button>
 
 <script>
 const url = new URLSearchParams(location.search);
@@ -232,15 +248,20 @@ let playing = true;
 const audio = document.getElementById("bgMusic");
 const musicBtn = document.getElementById("musicBtn");
 
+// Başlangıçta açık simge
+musicBtn.classList.add("playing");
+
 function toggleMusic(){
   if(playing){
     audio.pause();
     playing=false;
     musicBtn.classList.add("off");
+    musicBtn.classList.remove("playing");
   } else {
     audio.play();
     playing=true;
     musicBtn.classList.remove("off");
+    musicBtn.classList.add("playing");
   }
 }
 musicBtn.addEventListener('click', toggleMusic);
@@ -248,4 +269,5 @@ musicBtn.addEventListener('click', toggleMusic);
 
 </body>
 </html>
+
 
