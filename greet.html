@@ -17,6 +17,7 @@ body {
   justify-content:center;
   padding:20px;
   color:white;
+  position:relative;
 }
 
 /* NEON BAŞLIK */
@@ -101,17 +102,18 @@ body {
   cursor:pointer;
 }
 
-/* MÜZİK BUTONU */
+/* MÜZİK BUTONU – SAĞ ÜST */
 .musicBtn {
-  width:50px;
-  height:50px;
+  width:55px;
+  height:55px;
   border-radius:50%;
   border:none;
   cursor:pointer;
   background:url('sound_off.png') center/cover no-repeat;
   position:fixed;
-  bottom:20px;
+  top:20px;
   right:20px;
+  z-index:999;
 }
 
 .musicBtn.on {
@@ -137,6 +139,10 @@ footer {
   <button onclick="closePopup()">Tamam</button>
 </div>
 
+<!-- MÜZİK BUTONU ÜSTTE -->
+<audio id="bgMusic" src="music_akordiyon.mp3" loop></audio>
+<button id="musicBtn" class="musicBtn"></button>
+
 <h1 class="neon">Happy Birthday 🎉</h1>
 
 <div class="card">
@@ -144,9 +150,6 @@ footer {
   <p id="noteText"></p>
   <button id="btn">Kutlama Mesajı</button>
 </div>
-
-<audio id="bgMusic" src="music_akordiyon.mp3?v=3" loop></audio>
-<button id="musicBtn" class="musicBtn"></button>
 
 <footer>
   Bu sayfa: Kemalettin Duyar tarafından yapılmıştır.
@@ -178,7 +181,7 @@ function closePopup(){
   overlay.classList.remove("show");
 }
 
-// MÜZİK BUTONU
+// MÜZİK BAĞIMSIZ KONTROL
 const music = document.getElementById("bgMusic");
 const musicBtn = document.getElementById("musicBtn");
 
