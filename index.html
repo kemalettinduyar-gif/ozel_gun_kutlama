@@ -9,6 +9,7 @@
 body {
   font-family: Arial,sans-serif;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
   min-height:100vh;
@@ -86,6 +87,20 @@ button:active::after {
   border-radius:10px;
   word-break:break-all;
 }
+
+footer {
+  margin-top:30px;
+  padding:12px;
+  font-size:14px;
+  color:#444;
+  text-align:center;
+  background:rgba(255,255,255,0.6);
+  border-top:1px solid #ddd;
+  border-radius:0 0 12px 12px;
+}
+footer:hover {
+  color:#ff6b6b;
+}
 </style>
 </head>
 
@@ -107,6 +122,10 @@ button:active::after {
 
   <button id="whatsapp">WhatsApp ile Gönder</button>
 </div>
+
+<footer>
+  © 🎂 Kemalettin Duyar
+</footer>
 
 <script>
 const first = document.getElementById('first');
