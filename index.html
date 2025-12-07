@@ -58,21 +58,7 @@ button {
   position:relative;
   overflow:hidden;
 }
-
-button:active::after {
-  content:"";
-  position:absolute;
-  left:50%; top:50%;
-  width:120px; height:120px;
-  background:rgba(255,255,255,0.4);
-  transform:translate(-50%,-50%) scale(0);
-  border-radius:50%;
-  animation:ripple 0.4s ease-out forwards;
-}
-
-@keyframes ripple {
-  to { transform:translate(-50%,-50%) scale(3); opacity:0; }
-}
+button:hover { transform:scale(1.02); }
 
 .result {
   margin-top:12px;
@@ -87,7 +73,6 @@ button:active::after {
   border-radius:10px;
   word-break:break-all;
 }
-
 footer {
   margin-top:30px;
   padding:12px;
@@ -97,9 +82,6 @@ footer {
   background:rgba(255,255,255,0.6);
   border-top:1px solid #ddd;
   border-radius:0 0 12px 12px;
-}
-footer:hover {
-  color:#ff6b6b;
 }
 </style>
 </head>
@@ -113,8 +95,6 @@ footer:hover {
   <input id="note" placeholder="Kısa not (opsiyonel)">
   <input id="btnmsg" placeholder="Buton mesajı (opsiyonel)">
   
-  <!-- Link Oluştur butonu kaldırıldı -->
-
   <div class="result" id="resWrap">
     <div class="linkbox" id="linkBox"></div>
     <button id="copyBtn">Kopyala</button>
@@ -123,9 +103,7 @@ footer:hover {
   <button id="whatsapp">WhatsApp ile Gönder</button>
 </div>
 
-<footer>
-  © 🎂 Kemalettin Duyar
-</footer>
+<footer>© 🎂 Kemalettin Duyar</footer>
 
 <script>
 const first = document.getElementById('first');
@@ -137,6 +115,7 @@ const linkBox = document.getElementById('linkBox');
 const copyBtn = document.getElementById('copyBtn');
 const whatsapp = document.getElementById('whatsapp');
 
+// --- LİNK ÜRETME ---
 function makeLink() {
   const f = first.value.trim();
   const l = last.value.trim();
@@ -151,9 +130,16 @@ function makeLink() {
   if(m) params.set('msg', m);
 
   const base = location.origin + location.pathname.replace(/index\.html$/,'') + 'greet.html';
-  return base + '?' + params.toString();
+  const link = base + '?' + params.toString();
+
+  // Göster
+  linkBox.textContent = link;
+  resWrap.style.display = 'flex';
+
+  return link;
 }
 
+// --- KOPYALA ---
 copyBtn.addEventListener('click', async()=>{
   try{
     await navigator.clipboard.writeText(linkBox.textContent);
@@ -164,9 +150,11 @@ copyBtn.addEventListener('click', async()=>{
   }
 });
 
+// --- WHATSAPP ---
 whatsapp.addEventListener('click', ()=>{
   const url = makeLink();
   if(!url) return;
+
   const text = encodeURIComponent(`🎉 Doğum günün kutlu olsun! Açmak için tıkla:\n${url}`);
   window.open(`https://wa.me/?text=${text}`, '_blank');
 });
