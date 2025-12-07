@@ -20,6 +20,20 @@ body {
   padding:20px;
 }
 
+/* ⭐ YILDIZ KAYMASI */
+.star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: white;
+  opacity: 0.8;
+  animation: fall linear infinite;
+}
+@keyframes fall {
+  0% { transform: translateY(-10vh) translateX(0); opacity: 1; }
+  100% { transform: translateY(110vh) translateX(25vw); opacity: 0; }
+}
+
 /* NEON BAŞLIK */
 .neon {
   font-size: 38px;
@@ -113,7 +127,7 @@ button:hover { transform:scale(1.03); }
 }
 .musicBtn.off { background:#888; }
 
-/* SES AÇ / SES KIS YAZISI */
+/* SES AÇ / KIS YAZISI */
 #musicLabel {
   font-size: 13px;
   font-weight: 600;
@@ -159,10 +173,6 @@ button:hover { transform:scale(1.03); }
   animation: fall linear forwards;
   z-index: 2;
 }
-@keyframes fall {
-  0% { transform: translateY(0) rotate(0deg); }
-  100% { transform: translateY(110vh) rotate(360deg); }
-}
 
 footer {
   position:fixed;
@@ -179,6 +189,9 @@ footer {
 
 <body>
 
+<!-- ⭐ YILDIZLAR (OTOMATİK ÜRETİLİR) -->
+<div id="stars"></div>
+
 <div id="overlay"></div>
 
 <div id="popup">
@@ -187,14 +200,14 @@ footer {
   <button onclick="closePopup()">Tamam</button>
 </div>
 
-<!-- MÜZİK BUTONU + SES YAZISI -->
+<!-- MÜZİK BUTONU + YAZI -->
 <div style="position:fixed; top:16px; right:16px; text-align:center; z-index:10000;">
-    <button id="musicBtn" class="musicBtn off">🎵</button>
-    <div id="musicLabel">Ses Aç</div>
+    <button id="musicBtn" class="musicBtn">🔊</button>
+    <div id="musicLabel">Ses Kıs</div>
 </div>
 
 <!-- MÜZİK -->
-<audio id="bgMusic" src="music_akordiyon.mp3" loop></audio>
+<audio id="bgMusic" src="music_akordiyon.mp3" autoplay loop></audio>
 
 <h1 class="neon">Happy Birthday 🎉</h1>
 
@@ -209,6 +222,16 @@ footer {
 </footer>
 
 <script>
+/* ⭐ YILDIZ KAYMASI OLUŞTURMA */
+for (let i = 0; i < 45; i++) {
+  let s = document.createElement("div");
+  s.className = "star";
+  s.style.left = Math.random() * 100 + "vw";
+  s.style.animationDuration = (3 + Math.random() * 4) + "s";
+  s.style.opacity = Math.random();
+  document.body.appendChild(s);
+}
+
 /* URL Parametreleri */
 const url = new URLSearchParams(location.search);
 const name = url.get("name") || "Mutlu Yıllar!";
@@ -229,6 +252,7 @@ document.getElementById("btn").onclick = () => {
   overlay.classList.add("show");
   startConfetti();
 };
+
 function closePopup() {
   pop.classList.remove("show");
   overlay.classList.remove("show");
@@ -240,15 +264,13 @@ const musicBtn = document.getElementById("musicBtn");
 const musicLabel = document.getElementById("musicLabel");
 
 musicBtn.onclick = () => {
-  if (music.paused) {
-    music.play();
-    musicBtn.classList.remove("off");
+  if (music.muted) {
+    music.muted = false;
     musicBtn.textContent = "🔊";
     musicLabel.textContent = "Ses Kıs";
   } else {
-    music.pause();
-    musicBtn.classList.add("off");
-    musicBtn.textContent = "🎵";
+    music.muted = true;
+    musicBtn.textContent = "🔈";
     musicLabel.textContent = "Ses Aç";
   }
 };
