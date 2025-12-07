@@ -113,7 +113,7 @@ footer:hover {
   <input id="note" placeholder="Kısa not (opsiyonel)">
   <input id="btnmsg" placeholder="Buton mesajı (opsiyonel)">
   
-  <button id="make">Link Oluştur</button>
+  <!-- Link Oluştur butonu kaldırıldı -->
 
   <div class="result" id="resWrap">
     <div class="linkbox" id="linkBox"></div>
@@ -132,7 +132,6 @@ const first = document.getElementById('first');
 const last = document.getElementById('last');
 const note = document.getElementById('note');
 const btnmsg = document.getElementById('btnmsg');
-const make = document.getElementById('make');
 const resWrap = document.getElementById('resWrap');
 const linkBox = document.getElementById('linkBox');
 const copyBtn = document.getElementById('copyBtn');
@@ -154,13 +153,6 @@ function makeLink() {
   const base = location.origin + location.pathname.replace(/index\.html$/,'') + 'greet.html';
   return base + '?' + params.toString();
 }
-
-make.addEventListener('click', ()=>{
-  const url = makeLink();
-  if(!url) return;
-  linkBox.textContent = url;
-  resWrap.style.display = 'flex';
-});
 
 copyBtn.addEventListener('click', async()=>{
   try{
