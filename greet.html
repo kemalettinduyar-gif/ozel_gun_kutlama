@@ -137,6 +137,25 @@ button:hover { transform:scale(1.03); }
   text-shadow: 0 0 6px #000;
 }
 
+/* PLAY HINT (AUTOPLAY ENGELLENDIĞINDE GÖRÜNÜR) */
+#playHint {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%) scale(1);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 18px 22px;
+  border-radius: 12px;
+  z-index: 11000;
+  text-align:center;
+  display:none;
+  cursor:pointer;
+  font-weight:700;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+#playHint small { display:block; font-weight:400; margin-top:6px; font-size:13px; opacity:0.85; }
+
 /* BALONLAR */
 .ballon {
   position: fixed;
@@ -173,6 +192,10 @@ button:hover { transform:scale(1.03); }
   animation: fall linear forwards;
   z-index: 2;
 }
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(110vh) rotate(360deg); }
+}
 
 footer {
   position:fixed;
@@ -206,8 +229,13 @@ footer {
     <div id="musicLabel">Ses Kıs</div>
 </div>
 
-<!-- MÜZİK -->
-<audio id="bgMusic" src="music_akordiyon.mp3" autoplay loop></audio>
+<!-- MÜZİK: muted autoplay playsinline deniyoruz (tarayıcı izin verirse ses açık şekilde devam edilir) -->
+<audio id="bgMusic" src="music_akordiyon.mp3" autoplay muted playsinline loop></audio>
+
+<!-- AUTOPLAY ENGELLENDİĞİNDE KULLANICIYA GÖRÜNECEK -->
+<div id="playHint" title="Tıkla, sesi aç">
+  Müziği açmak için tıkla<br><small>(Tarayıcı otomatik sesi engelledi — bir kere tıklaman yeterli)</small>
+</div>
 
 <h1 class="neon">Happy Birthday 🎉</h1>
 
@@ -258,14 +286,58 @@ function closePopup() {
   overlay.classList.remove("show");
 }
 
-/* MÜZİK BUTONU */
+/* MÜZİK BUTONU VE AUTOPLAY-FALLBACK */
 const music = document.getElementById("bgMusic");
 const musicBtn = document.getElementById("musicBtn");
 const musicLabel = document.getElementById("musicLabel");
+const playHint = document.getElementById("playHint");
 
-musicBtn.onclick = () => {
-  if (music.muted) {
+// Deneyecek: sessiz (muted) oynatmayı başlat (çoğu tarayıcı izin verir)
+function tryAutoPlay() {
+  const p = music.play();
+  if (p !== undefined) {
+    p.then(() => {
+      // Başarılı: audio çalıyor ama şu an muted. Eğer izin veriyorsa, unmute yapmayı deneyebiliriz
+      // Çoğu tarayıcı kullanıcının etkileşimi olmadan sesi açmaya izin vermez, bu yüzden bırakıyoruz mutede.
+      // Kullanıcı etkileşimi olduğunda açılacak.
+      music.muted = false; // dene - bazı tarayıcılarda hemen açılır, bazılarında hata verir
+      if (!music.muted) {
+        musicBtn.textContent = "🔊";
+        musicLabel.textContent = "Ses Kıs";
+      } else {
+        // Eğer tekrar muted kaldıysa, göster düğmeyi
+        showPlayHint();
+      }
+    }).catch((err) => {
+      // Autoplay engellendi: oynatma çağrısı reddedildi
+      music.muted = true;
+      showPlayHint();
+    });
+  } else {
+    // play() undefined ise (çok eski tarayıcılar), göster play hint
+    showPlayHint();
+  }
+}
+
+function showPlayHint() {
+  playHint.style.display = "block";
+  // Kullanıcının herhangi bir tıklaması ile sesi aç
+  const onUser = () => {
+    playHint.style.display = "none";
     music.muted = false;
+    music.play().catch(()=>{/* ignore */});
+    musicBtn.textContent = "🔊";
+    musicLabel.textContent = "Ses Kıs";
+    window.removeEventListener('pointerdown', onUser);
+  };
+  window.addEventListener('pointerdown', onUser);
+}
+
+// Music buton toggle: kullanıcı ayrıca butona basarak açıp kapatabilir
+musicBtn.addEventListener('click', () => {
+  if (music.muted || music.paused) {
+    music.muted = false;
+    music.play().catch(()=>{/* ignore */});
     musicBtn.textContent = "🔊";
     musicLabel.textContent = "Ses Kıs";
   } else {
@@ -273,7 +345,13 @@ musicBtn.onclick = () => {
     musicBtn.textContent = "🔈";
     musicLabel.textContent = "Ses Aç";
   }
-};
+});
+
+// sayfa yüklendiğinde autoplay dene
+window.addEventListener('load', () => {
+  // not: bazı tarayıcılarda load içinde play() yine reddedilebilir; tryAutoPlay() bununla ilgilenir
+  tryAutoPlay();
+});
 
 /* BALONLAR */
 function createBalloon() {
