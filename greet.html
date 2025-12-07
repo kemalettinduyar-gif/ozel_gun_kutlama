@@ -129,6 +129,17 @@ button:hover { transform:scale(1.03); }
 .musicBtn.off::after { content:"🔇"; position:absolute; font-size:18px; animation:none; }
 @keyframes glow { 0% { box-shadow:0 4px 12px rgba(0,0,0,0.25),0 0 8px #ff6b6b40; } 50% { box-shadow:0 4px 16px rgba(0,0,0,0.3),0 0 18px #ff6b6b80; } 100% { box-shadow:0 4px 12px rgba(0,0,0,0.25),0 0 8px #ff6b6b40; } }
 @keyframes pulse { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.2) rotate(-10deg); } 100% { transform: scale(1) rotate(10deg); } }
+
+/* ----------- FOOTER ----------- */
+footer {
+  position:fixed;
+  bottom:10px;
+  width:100%;
+  text-align:center;
+  color:#fff;
+  font-size:14px;
+  opacity:0.8;
+}
 </style>
 </head>
 <body>
@@ -150,9 +161,11 @@ button:hover { transform:scale(1.03); }
   
 <!-- ========== Mp3 Dosyası =========== -->
 <audio id="bgMusic" src="music_akordiyon.mp3?v=3" loop></audio>
-<!-- <audio id="bgMusic" src="music_DogumGunu.mp3?v=3" loop></audio> -->
-<!-- ========== Mp3 Dosyası ========== -->
 <button id="musicBtn" class="musicBtn off"></button>
+
+<footer>
+  Bu sayfa: Kemalettin Duyar tarafından yapılmıştır.
+</footer>
 
 <script>
 // URL parametreleri
@@ -167,39 +180,32 @@ document.getElementById("noteText").textContent = note;
 const pop = document.getElementById("popup");
 const overlay = document.getElementById("overlay");
 const popMsg = document.getElementById("popMsg");
-document.getElementById("btn").onclick = () => { popMsg.textContent = msg; pop.classList.add("show"); overlay.classList.add("show"); };
-function closePopup() { pop.classList.remove("show"); overlay.classList.remove("show"); }
+document.getElementById("btn").onclick = () => { 
+  popMsg.textContent = msg; 
+  pop.classList.add("show"); 
+  overlay.classList.add("show"); 
+};
+function closePopup() { 
+  pop.classList.remove("show"); 
+  overlay.classList.remove("show"); 
+}
 
 // Balon ve konfeti
-function createBalloon() { const b=document.createElement("div"); b.className="balloon"; b.style.left=Math.random()*100+"%"; b.style.animationDuration=(6+Math.random()*6)+"s"; const colors=["#ff6b6b","#ffd93d","#6bcfff","#a29bfe","#ff8ed4"]; b.style.background=colors[Math.floor(Math.random()*colors.length)]; document.body.appendChild(b); setTimeout(()=>b.remove(),12000); }
-setInterval(createBalloon,900);
-function createConfetti() { const c=document.createElement("div"); c.className="confetti"; c.style.left=Math.random()*100+"%"; c.style.animationDuration=(3+Math.random()*3)+"s"; const colors=["#ff6b6b","#ffd93d","#6bcfff","#ffffff"]; c.style.background=colors[Math.floor(Math.random()*colors.length)]; document.body.appendChild(c); setTimeout(()=>c.remove(),6000); }
-setInterval(createConfetti,180);
-
-/* ---------------- MÜZİK BUTONU ---------------- */
-let audio = document.getElementById("bgMusic");
-let musicBtn = document.getElementById("musicBtn");
-let playing = false; // başlangıçta kapalı
-
-function toggleMusic(){
-  if(playing){
-    audio.pause();
-    playing=false;
-    musicBtn.classList.add("off");
-    musicBtn.classList.remove("playing");
-  } else {
-    audio.play().catch(()=>{}); // autoplay engellenirse hata yeme
-    playing=true;
-    musicBtn.classList.remove("off");
-    musicBtn.classList.add("playing");
-  }
+function createBalloon() { 
+  const b=document.createElement("div"); 
+  b.className="balloon"; 
+  b.style.left=Math.random()*100+"%"; 
+  b.style.animationDuration=(6+Math.random()*6)+"s"; 
+  const colors=["#ff6b6b","#ffd93d","#6bcfff","#a29bfe","#ff8ed4"]; 
+  b.style.background=colors[Math.floor(Math.random()*colors.length)]; 
+  document.body.appendChild(b); 
+  setTimeout(()=>b.remove(),12000); 
 }
-musicBtn.addEventListener('click', toggleMusic);
-</script>
+setInterval(createBalloon,900);
 
-</body>
-</html>
-
-
-
-
+function createConfetti() { 
+  const c=document.createElement("div"); 
+  c.className="confetti"; 
+  c.style.left=Math.random()*100+"%"; 
+  c.style.animationDuration=(3+Math.random()*3)+"s"; 
+  const colors=["#
